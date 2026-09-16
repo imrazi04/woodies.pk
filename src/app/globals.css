@@ -1,26 +1,210 @@
 @import "tailwindcss";
 
+/* Admin tokens: the same warm palette as the storefront. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f6f2ec;
+  --foreground: #2a241f;
+  --muted: #6e6258;
+  --border: #e6ddd1;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  /* Fonts are loaded in app/layout.tsx */
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-cormorant), ui-serif, Georgia, serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@theme {
+  /* Warm, earthy neutrals shared by the storefront and admin */
+  --color-cream: #f7f3ed;
+  --color-linen: #efe8de;
+  --color-sand: #e0d3c1;
+  --color-taupe: #6e6258;
+  --color-clay: #9a5a3a;
+  --color-clay-dark: #7c472d;
+  --color-olive: #6b6d4a;
+  --color-espresso: #2a241f;
+  --color-rust: #a13d2d;
+  --color-gold: #b9812f;
+
+  --shadow-soft: 0 1px 2px rgb(42 36 31 / 0.04), 0 12px 32px -14px rgb(42 36 31 / 0.14);
+  --shadow-lift: 0 2px 6px rgb(42 36 31 / 0.05), 0 28px 56px -20px rgb(42 36 31 / 0.24);
+
+  --ease-luxe: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --animate-fade-up: fade-up 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-fade-in: fade-in 1.2s ease-out both;
+  --animate-slow-zoom: slow-zoom 2.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-bump: bump 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(1.5rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slow-zoom {
+    from {
+      transform: scale(1.12);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes bump {
+    40% {
+      transform: scale(1.35);
+    }
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Sections fade up as they scroll into view. Browsers without scroll-driven animations show them normally. */
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(2rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+  }
+}
+
+/* Side drawers (cart, admin navigation). Browsers without @starting-style show and hide them instantly. */
+.drawer {
+  translate: 100% 0;
+  transition:
+    translate 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    overlay 0.5s allow-discrete,
+    display 0.5s allow-discrete;
+}
+
+.drawer.drawer-left {
+  translate: -100% 0;
+}
+
+.drawer[open],
+.drawer.drawer-left[open] {
+  translate: 0 0;
+}
+
+@starting-style {
+  .drawer[open] {
+    translate: 100% 0;
+  }
+
+  .drawer.drawer-left[open] {
+    translate: -100% 0;
+  }
+}
+
+/* Centered dialogs (confirmations, review form, photo viewer). */
+.modal {
+  opacity: 0;
+  scale: 0.96;
+  transition:
+    opacity 0.3s ease,
+    scale 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    overlay 0.4s allow-discrete,
+    display 0.4s allow-discrete;
+}
+
+.modal[open] {
+  opacity: 1;
+  scale: 1;
+}
+
+@starting-style {
+  .modal[open] {
+    opacity: 0;
+    scale: 0.96;
+  }
+}
+
+.drawer::backdrop,
+.modal::backdrop {
+  background-color: rgb(42 36 31 / 0);
+  transition:
+    background-color 0.4s ease,
+    overlay 0.4s allow-discrete,
+    display 0.4s allow-discrete;
+}
+
+.drawer[open]::backdrop,
+.modal[open]::backdrop {
+  background-color: rgb(42 36 31 / 0.45);
+}
+
+@starting-style {
+  .drawer[open]::backdrop,
+  .modal[open]::backdrop {
+    background-color: rgb(42 36 31 / 0);
+  }
+}
+
+/* Delivery pin on the checkout map (a Leaflet divIcon). */
+.location-pin {
+  position: relative;
+  display: block;
+  width: 36px;
+  height: 36px;
+  border: 3px solid #fff;
+  border-radius: 50% 50% 50% 0;
+  background: #9a5a3a;
+  box-shadow: 0 8px 18px rgb(42 36 31 / 0.35);
+  transform: rotate(-45deg);
+}
+
+.location-pin::after {
+  content: "";
+  position: absolute;
+  inset: 9px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
