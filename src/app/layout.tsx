@@ -52,6 +52,9 @@ export const metadata: Metadata = {
     },
   },
   category: "shopping",
+  verification: {
+    google: "4txDPcIny2xvvVyJQ9CWuUT0ARLs_X9DbZO0gufArhA",
+  },
 };
 
 export const viewport: Viewport = {
