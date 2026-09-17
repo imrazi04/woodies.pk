@@ -39,7 +39,7 @@ export function AdminSidebar({ email, pendingOrders }: SidebarProps) {
   return (
     <>
       {/* Mobile: top bar with a slide-in navigation drawer */}
-      <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-espresso/8 bg-background/85 px-3 backdrop-blur-xl md:hidden">
+      <header className="sticky top-0 print:hidden z-30 flex h-14 items-center justify-between border-b border-espresso/8 bg-background/85 px-3 backdrop-blur-xl md:hidden">
         <button
           type="button"
           onClick={() => setMobileOpen(true)}
@@ -80,7 +80,7 @@ export function AdminSidebar({ email, pendingOrders }: SidebarProps) {
       </dialog>
 
       {/* Desktop: fixed dark sidebar */}
-      <aside className="hidden bg-espresso text-cream md:sticky md:top-0 md:flex md:h-dvh md:w-64 md:shrink-0 md:flex-col">
+      <aside className="hidden bg-espresso text-cream md:sticky md:top-0 md:flex md:h-dvh md:w-64 md:shrink-0 md:flex-col print:hidden">
         <SidebarContent email={email} pendingOrders={pendingOrders} />
       </aside>
     </>

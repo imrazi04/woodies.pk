@@ -208,3 +208,20 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/* Shipping slips print on A5 (148 × 210 mm), a size courier counters and label printers accept. */
+@page shipping-slip {
+  size: A5 portrait;
+  margin: 8mm;
+}
+
+@media print {
+  body {
+    background: #fff;
+  }
+
+  .shipping-slip {
+    page: shipping-slip;
+    print-color-adjust: exact;
+  }
+}
