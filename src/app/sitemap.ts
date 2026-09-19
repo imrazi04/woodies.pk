@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { siteConfig } from "@/config/site";
 import { absoluteUrl } from "@/lib/seo";
 import { getPublicClient } from "@/lib/supabase/public";
 
@@ -14,6 +15,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: absoluteUrl("/products"), lastModified: now, changeFrequency: "daily", priority: 0.9 },
     { url: absoluteUrl("/sale"), lastModified: now, changeFrequency: "daily", priority: 0.7 },
     { url: absoluteUrl("/track-order"), lastModified: now, changeFrequency: "yearly", priority: 0.3 },
+    ...siteConfig.policyNav.map((link) => ({
+      url: absoluteUrl(link.href),
+      lastModified: new Date(siteConfig.policies.lastUpdated),
+      changeFrequency: "yearly" as const,
+      priority: 0.2,
+    })),
   ];
 
   try {

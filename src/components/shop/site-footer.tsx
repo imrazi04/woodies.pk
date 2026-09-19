@@ -60,10 +60,21 @@ export function SiteFooter({ categories }: { categories: { name: string; slug: s
       </Container>
 
       <div className="border-t border-cream/10">
-        <Container className="flex flex-col gap-2 py-6 text-xs text-cream/55 sm:flex-row sm:items-center sm:justify-between">
+        <Container className="flex flex-col gap-4 py-6 text-xs text-cream/55 lg:flex-row lg:items-center lg:justify-between">
           <p>
             © {new Date().getFullYear()} {siteConfig.name}. All rights reserved.
           </p>
+          <nav aria-label="Policies">
+            <ul className="flex flex-wrap gap-x-6 gap-y-2">
+              {siteConfig.policyNav.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="transition-colors duration-300 hover:text-cream">
+                    {link.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
           <p className="font-display text-sm italic">Made for slow living.</p>
         </Container>
       </div>

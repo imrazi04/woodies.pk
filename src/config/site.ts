@@ -36,6 +36,17 @@ export const siteConfig = {
     /** e.g. ["https://www.facebook.com/…", "https://www.instagram.com/…"] */
     socialProfiles: [] as string[],
   },
+  /** Terms quoted in the privacy, terms and refund pages. Change them here and every page follows. */
+  policies: {
+    lastUpdated: "2026-09-19",
+    /** Days after delivery to request a return of an unused item. */
+    returnWindowDays: 7,
+    /** Hours after delivery to report damage or a wrong item, with photos. */
+    damageReportHours: 48,
+    /** Working days to send a refund once a return is received and checked. */
+    refundProcessingDays: "7–10",
+    deliveryTimes: { majorCities: "3–7", otherAreas: "5–10" },
+  },
   hero: {
     eyebrow: "The new collection",
     title: "Furniture made for",
@@ -44,6 +55,11 @@ export const siteConfig = {
     /** Optional image in /public, e.g. "/hero.jpg". Falls back to a featured product photo. */
     image: null as string | null,
   },
+  policyNav: [
+    { title: "Privacy Policy", href: "/privacy-policy" },
+    { title: "Terms & Conditions", href: "/terms-and-conditions" },
+    { title: "Return & Refund Policy", href: "/refund-policy" },
+  ],
   adminNav: [
     { title: "Overview", href: "/admin" },
     { title: "Categories", href: "/admin/categories" },
