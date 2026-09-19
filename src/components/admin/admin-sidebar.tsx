@@ -11,6 +11,7 @@ import {
   Package,
   ShoppingBag,
   Tags,
+  UsersRound,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -32,6 +33,7 @@ const icons: Record<AdminHref, LucideIcon> = {
   "/admin/reviews": MessageSquare,
   "/admin/messages": Inbox,
   "/admin/contacts": BookUser,
+  "/admin/team": UsersRound,
 };
 
 type SidebarProps = { email?: string; pendingOrders: number; unreadMessages: number };

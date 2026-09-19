@@ -16,9 +16,15 @@ export function SiteFooter({ categories }: { categories: { name: string; slug: s
       links: categories.map((category) => ({ href: `/categories/${category.slug}`, label: category.name })),
     },
     {
+      title: "About",
+      links: [
+        { href: "/team", label: "Team & artisans" },
+        { href: "/contact", label: "Contact us" },
+      ],
+    },
+    {
       title: "Customer care",
       links: [
-        { href: "/contact", label: "Contact us" },
         { href: "/track-order", label: "Track your order" },
         { href: "/cart", label: "Cart" },
         { href: "/wishlist", label: "Wishlist" },
@@ -38,7 +44,7 @@ export function SiteFooter({ categories }: { categories: { name: string; slug: s
             <p className="mt-5 max-w-sm leading-relaxed text-cream/65">{siteConfig.tagline}</p>
           </div>
 
-          <div className="grid grid-cols-2 gap-10 sm:grid-cols-3 md:col-span-7">
+          <div className="grid grid-cols-2 gap-10 sm:grid-cols-4 md:col-span-7">
             {columns.map((column) => (
               <div key={column.title}>
                 <h2 className="text-[11px] font-semibold tracking-[0.2em] text-cream/55 uppercase">{column.title}</h2>

@@ -165,6 +165,13 @@ export default async function ContactPage() {
             <p className="font-display text-xl text-espresso italic">
               Planning a visit? Message us first and we&apos;ll share directions.
             </p>
+            <Link
+              href="/team"
+              className="inline-flex items-center gap-2 text-sm font-medium text-espresso underline decoration-espresso/30 underline-offset-4 transition-colors duration-300 hover:decoration-espresso"
+            >
+              Meet our artisans
+              <ArrowUpRight className="size-4" aria-hidden />
+            </Link>
           </div>
         </Container>
       </section>

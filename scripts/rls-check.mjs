@@ -52,6 +52,9 @@ await mustError("review order_id column is not readable", () => anon.from("revie
 await mustError("select * on reviews is refused", () => anon.from("reviews").select("*"));
 await mustError("rate_limits table is not readable", () => anon.from("rate_limits").select("bucket, identity"));
 await mustError("contact messages are not readable", () => anon.from("contact_messages").select("id, email, message"));
+await mustBeEmpty("hidden team members are not readable", () =>
+  anon.from("team_members").select("id, name").eq("is_published", false),
+);
 await mustBeEmpty("hidden contacts are not readable", () =>
   anon.from("contact_persons").select("id, name").eq("is_published", false),
 );
@@ -83,6 +86,18 @@ await mustError("cannot insert a contact message directly", () =>
     .from("contact_messages")
     .insert({ name: "bot", email: "bot@example.com", message: "spam spam spam" })
     .select("id"),
+);
+await mustError("cannot add a team member", () =>
+  anon.from("team_members").insert({ name: "bot", role: "x" }).select("id"),
+);
+await mustBeEmpty("cannot change a team member", () =>
+  anon.from("team_members").update({ name: "pwned" }).neq("id", "00000000-0000-0000-0000-000000000000").select("id"),
+);
+await mustBeEmpty("cannot delete team members", () =>
+  anon.from("team_members").delete().neq("id", "00000000-0000-0000-0000-000000000000").select("id"),
+);
+await mustError("cannot upload a team photo", () =>
+  anon.storage.from("team-photos").upload(`probe-${Date.now()}.jpg`, new Blob(["x"], { type: "image/jpeg" })),
 );
 await mustError("cannot add a contact person", () =>
   anon.from("contact_persons").insert({ name: "bot", department: "x", phone: "+923000000000" }).select("id"),

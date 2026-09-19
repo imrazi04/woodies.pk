@@ -77,5 +77,6 @@ export const siteConfig = {
     { title: "Reviews", href: "/admin/reviews" },
     { title: "Messages", href: "/admin/messages" },
     { title: "Contacts", href: "/admin/contacts" },
+    { title: "Team", href: "/admin/team" },
   ],
 } as const;

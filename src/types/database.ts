@@ -325,6 +325,51 @@ export type Database = {
         };
         Relationships: [];
       };
+      team_members: {
+        Row: {
+          id: string;
+          name: string;
+          role: string;
+          bio: string | null;
+          image_url: string | null;
+          phone: string | null;
+          is_whatsapp: boolean;
+          email: string | null;
+          display_order: number;
+          is_published: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          role: string;
+          bio?: string | null;
+          image_url?: string | null;
+          phone?: string | null;
+          is_whatsapp?: boolean;
+          email?: string | null;
+          display_order?: number;
+          is_published?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          role?: string;
+          bio?: string | null;
+          image_url?: string | null;
+          phone?: string | null;
+          is_whatsapp?: boolean;
+          email?: string | null;
+          display_order?: number;
+          is_published?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       product_rating_summaries: {
@@ -384,3 +429,4 @@ export type OrderItem = Tables<"order_items">;
 export type Review = Tables<"reviews">;
 export type ContactPerson = Tables<"contact_persons">;
 export type ContactMessage = Tables<"contact_messages">;
+export type TeamMember = Tables<"team_members">;
