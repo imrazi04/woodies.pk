@@ -18,6 +18,7 @@ export function SiteFooter({ categories }: { categories: { name: string; slug: s
     {
       title: "About",
       links: [
+        { href: "/chiniot-heritage", label: "Chiniot heritage" },
         { href: "/team", label: "Team & artisans" },
         { href: "/contact", label: "Contact us" },
       ],

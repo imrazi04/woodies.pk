@@ -3,29 +3,19 @@
 import { errorState, successState, type ActionState } from "@/lib/action-state";
 import { requireAdmin } from "@/lib/auth/session";
 import { revalidateSite } from "@/lib/revalidate";
-import { TEAM_PHOTOS_BUCKET, teamPhotoPathFromUrl } from "@/lib/storage/team-photos";
+import { TEAM_PHOTOS_BUCKET } from "@/lib/storage/public-photos";
+import { removeUnusedPhoto } from "@/lib/storage/public-photos.server";
 import type { ServerSupabaseClient } from "@/lib/supabase/server";
 import { readTeamMemberForm, teamMemberSchema } from "@/lib/validations/team";
 import { isUuid, validationError } from "@/lib/validations/utils";
 
-/**
- * Deletes a photo from the team bucket once nothing uses it. Never fails the surrounding action:
- * the database change already succeeded, and a leftover file is harmless.
- */
+/** Deletes an uploaded team photo unless another member still uses it. */
 async function removeTeamPhoto(supabase: ServerSupabaseClient, url: string | null) {
-  const path = url ? teamPhotoPathFromUrl(url) : null;
-  if (!url || !path) return;
-
-  // The same photo link can be used by more than one member; keep it while anyone still does.
-  const { data: users, error: usageError } = await supabase
-    .from("team_members")
-    .select("id")
-    .eq("image_url", url)
-    .limit(1);
-  if (usageError || users.length > 0) return;
-
-  const { error } = await supabase.storage.from(TEAM_PHOTOS_BUCKET).remove([path]);
-  if (error) console.error("Failed to remove team photo", path, error);
+  await removeUnusedPhoto(supabase, TEAM_PHOTOS_BUCKET, url, async (photoUrl) => {
+    const { data, error } = await supabase.from("team_members").select("id").eq("image_url", photoUrl).limit(1);
+    if (error) throw error;
+    return data.length > 0;
+  });
 }
 
 /** Creates a team member, or updates one when `memberId` is given. */

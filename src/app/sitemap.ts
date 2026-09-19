@@ -14,6 +14,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: absoluteUrl("/"), lastModified: now, changeFrequency: "daily", priority: 1 },
     { url: absoluteUrl("/products"), lastModified: now, changeFrequency: "daily", priority: 0.9 },
     { url: absoluteUrl("/sale"), lastModified: now, changeFrequency: "daily", priority: 0.7 },
+    { url: absoluteUrl("/chiniot-heritage"), lastModified: now, changeFrequency: "monthly", priority: 0.6 },
     { url: absoluteUrl("/team"), lastModified: now, changeFrequency: "monthly", priority: 0.5 },
     { url: absoluteUrl("/contact"), lastModified: now, changeFrequency: "monthly", priority: 0.5 },
     { url: absoluteUrl("/track-order"), lastModified: now, changeFrequency: "yearly", priority: 0.3 },

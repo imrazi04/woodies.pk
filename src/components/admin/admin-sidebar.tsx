@@ -4,6 +4,7 @@ import {
   BookUser,
   ExternalLink,
   Inbox,
+  Landmark,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -34,6 +35,7 @@ const icons: Record<AdminHref, LucideIcon> = {
   "/admin/messages": Inbox,
   "/admin/contacts": BookUser,
   "/admin/team": UsersRound,
+  "/admin/heritage": Landmark,
 };
 
 type SidebarProps = { email?: string; pendingOrders: number; unreadMessages: number };

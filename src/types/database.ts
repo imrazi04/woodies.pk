@@ -370,6 +370,45 @@ export type Database = {
         };
         Relationships: [];
       };
+      chiniot_stories: {
+        Row: {
+          id: string;
+          title: string;
+          slug: string;
+          content: string;
+          image_url: string | null;
+          video_url: string | null;
+          display_order: number;
+          is_published: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          title: string;
+          slug: string;
+          content: string;
+          image_url?: string | null;
+          video_url?: string | null;
+          display_order?: number;
+          is_published?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          title?: string;
+          slug?: string;
+          content?: string;
+          image_url?: string | null;
+          video_url?: string | null;
+          display_order?: number;
+          is_published?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       product_rating_summaries: {
@@ -430,3 +469,4 @@ export type Review = Tables<"reviews">;
 export type ContactPerson = Tables<"contact_persons">;
 export type ContactMessage = Tables<"contact_messages">;
 export type TeamMember = Tables<"team_members">;
+export type ChiniotStory = Tables<"chiniot_stories">;

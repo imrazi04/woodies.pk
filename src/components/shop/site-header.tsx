@@ -51,6 +51,7 @@ export function SiteHeader({ categories }: { categories: { name: string; slug: s
       isCategory: true,
     })),
     { href: "/sale", label: "Sale" },
+    { href: "/chiniot-heritage", label: "Heritage" },
     { href: "/track-order", label: "Track order" },
     { href: "/contact", label: "Contact" },
   ];
@@ -81,7 +82,7 @@ export function SiteHeader({ categories }: { categories: { name: string; slug: s
           {siteConfig.name}
         </Link>
 
-        <nav aria-label="Main" className="hidden items-center gap-9 md:flex">
+        <nav aria-label="Main" className="hidden items-center gap-7 md:flex lg:gap-9">
           {links.map((link) => {
             const active = isActive(pathname, link.href);
             return (
@@ -91,7 +92,7 @@ export function SiteHeader({ categories }: { categories: { name: string; slug: s
                 aria-current={active ? "page" : undefined}
                 className={cn(
                   "group relative py-2 text-[12px] font-semibold tracking-[0.16em] uppercase transition-colors duration-300",
-                  link.isCategory && "hidden lg:block",
+                  link.isCategory && "hidden xl:block",
                   active ? "text-espresso" : "text-taupe hover:text-espresso",
                 )}
               >

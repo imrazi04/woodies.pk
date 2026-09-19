@@ -52,6 +52,9 @@ await mustError("review order_id column is not readable", () => anon.from("revie
 await mustError("select * on reviews is refused", () => anon.from("reviews").select("*"));
 await mustError("rate_limits table is not readable", () => anon.from("rate_limits").select("bucket, identity"));
 await mustError("contact messages are not readable", () => anon.from("contact_messages").select("id, email, message"));
+await mustBeEmpty("draft heritage stories are not readable", () =>
+  anon.from("chiniot_stories").select("id, title").eq("is_published", false),
+);
 await mustBeEmpty("hidden team members are not readable", () =>
   anon.from("team_members").select("id, name").eq("is_published", false),
 );
@@ -86,6 +89,19 @@ await mustError("cannot insert a contact message directly", () =>
     .from("contact_messages")
     .insert({ name: "bot", email: "bot@example.com", message: "spam spam spam" })
     .select("id"),
+);
+await mustError("cannot add a heritage story", () =>
+  anon.from("chiniot_stories").insert({ title: "pwned", slug: "pwned", content: "x" }).select("id"),
+);
+await mustBeEmpty("cannot change a heritage story", () =>
+  anon
+    .from("chiniot_stories")
+    .update({ title: "pwned" })
+    .neq("id", "00000000-0000-0000-0000-000000000000")
+    .select("id"),
+);
+await mustError("cannot upload a heritage image", () =>
+  anon.storage.from("heritage-images").upload(`probe-${Date.now()}.jpg`, new Blob(["x"], { type: "image/jpeg" })),
 );
 await mustError("cannot add a team member", () =>
   anon.from("team_members").insert({ name: "bot", role: "x" }).select("id"),

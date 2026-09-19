@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { isStorageImageUrl } from "@/lib/storage/team-photos";
+import { isStorageImageUrl } from "@/lib/storage/public-photos";
 import { normalizePakistaniMobile } from "./checkout";
 
 const emailSchema = z.email();

@@ -7,6 +7,8 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
 const supabaseHost = URL.canParse(supabaseUrl) ? new URL(supabaseUrl).host : "*.supabase.co";
 const supabaseOrigin = `https://${supabaseHost}`;
 const mapTiles = "https://tile.openstreetmap.org https://*.tile.openstreetmap.org";
+// Heritage story videos (see src/lib/video.ts). They only load after the visitor presses play.
+const videoFrames = "https://www.youtube-nocookie.com https://player.vimeo.com";
 
 /**
  * Static Content-Security-Policy.
@@ -20,6 +22,7 @@ const contentSecurityPolicy = [
   "base-uri 'self'",
   "object-src 'none'",
   "frame-ancestors 'none'",
+  `frame-src ${videoFrames}`,
   "form-action 'self'",
   `img-src 'self' data: blob: ${supabaseOrigin} ${mapTiles}`,
   "font-src 'self' data:",

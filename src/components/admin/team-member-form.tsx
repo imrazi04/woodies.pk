@@ -1,27 +1,19 @@
 "use client";
 
-import { ImagePlus, Plus, Save, UserRound, X } from "lucide-react";
-import Image from "next/image";
+import { Plus, Save } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useId, useState } from "react";
+import { useState } from "react";
 import { discardTeamPhoto, saveTeamMember } from "@/actions/team";
+import { PhotoPicker, usePhotoPicker } from "@/components/admin/photo-picker";
 import { Alert, FormMessage } from "@/components/ui/alert";
-import { Button, buttonClasses } from "@/components/ui/button";
+import { buttonClasses } from "@/components/ui/button";
 import { Field, fieldProps, Input, Switch, Textarea } from "@/components/ui/form-fields";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { useActionForm } from "@/hooks/use-action-form";
 import { errorState } from "@/lib/action-state";
 import { formatPhone } from "@/lib/format";
-import { compressImage } from "@/lib/reviews/compress-image";
-import {
-  isStorageImageUrl,
-  TEAM_PHOTO_ACCEPT,
-  TEAM_PHOTOS_BUCKET,
-  teamPhotoPath,
-  validateTeamPhotoFile,
-} from "@/lib/storage/team-photos";
-import { createClient } from "@/lib/supabase/client";
+import { TEAM_PHOTOS_BUCKET } from "@/lib/storage/public-photos";
 import type { TeamMember } from "@/types/database";
 
 /** Adds a team member, or edits `member` when given. */
@@ -38,18 +30,6 @@ export function TeamMemberForm({ member }: { member?: TeamMember }) {
   );
 }
 
-/** Resizes the photo and uploads it straight to Supabase Storage (admin session + storage RLS). */
-async function uploadTeamPhoto(file: File) {
-  const resized = await compressImage(file);
-  const supabase = createClient();
-  const path = teamPhotoPath();
-  const { error } = await supabase.storage
-    .from(TEAM_PHOTOS_BUCKET)
-    .upload(path, resized, { contentType: "image/jpeg", cacheControl: "31536000", upsert: false });
-  if (error) throw error;
-  return supabase.storage.from(TEAM_PHOTOS_BUCKET).getPublicUrl(path).data.publicUrl;
-}
-
 function TeamMemberFormInner({
   member,
   notice,
@@ -60,127 +40,38 @@ function TeamMemberFormInner({
   onAdded: (message: string) => void;
 }) {
   const router = useRouter();
-  const fileInputId = useId();
-  const [photoUrl, setPhotoUrl] = useState(member?.image_url ?? "");
-  const [photo, setPhoto] = useState<{ file: File; preview: string } | null>(null);
-  const [photoError, setPhotoError] = useState<string | null>(null);
-
-  // Release the preview's memory when it's replaced or the form unmounts.
-  useEffect(
-    () => () => {
-      if (photo) URL.revokeObjectURL(photo.preview);
-    },
-    [photo],
-  );
+  const photo = usePhotoPicker(member?.image_url);
 
   const { state, pending, onSubmit } = useActionForm(async (prev, formData) => {
-    let uploadedUrl: string | null = null;
-    if (photo) {
-      try {
-        uploadedUrl = await uploadTeamPhoto(photo.file);
-      } catch (error) {
-        console.error("Team photo upload failed", error);
-        return errorState("The photo couldn't be uploaded. Try another image, or try again.");
-      }
+    let image: { url: string; uploaded: boolean };
+    try {
+      image = await photo.resolve(TEAM_PHOTOS_BUCKET);
+    } catch (error) {
+      console.error("Team photo upload failed", error);
+      return errorState("The photo couldn't be uploaded. Try another image, or try again.");
     }
-    formData.set("image_url", uploadedUrl ?? photoUrl);
+    formData.set("image_url", image.url);
 
     const result = await saveTeamMember(member?.id ?? null, prev, formData);
     if (result.status === "success") {
       if (member) router.push("/admin/team");
       else onAdded(result.message ?? "Team member added.");
-    } else if (uploadedUrl) {
+    } else if (image.uploaded) {
       // Nothing points at the new file; it's uploaded again on the next save.
-      void discardTeamPhoto(uploadedUrl);
+      void discardTeamPhoto(image.url);
     }
     return result;
   });
   const errors = state.fieldErrors;
 
-  function choosePhoto(file: File) {
-    const invalid = validateTeamPhotoFile(file);
-    setPhotoError(invalid);
-    if (!invalid) setPhoto({ file, preview: URL.createObjectURL(file) });
-  }
-
-  function clearPhoto() {
-    setPhoto(null);
-    setPhotoUrl("");
-    setPhotoError(null);
-  }
-
-  // Only preview links that can actually be saved (and loaded under the site's image policy).
-  const previewSrc = photo?.preview ?? (isStorageImageUrl(photoUrl) ? photoUrl : null);
-  const photoMessage = photoError ?? errors?.image_url?.[0];
-
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-5">
-      <div>
-        <p className="mb-1.5 text-[13px] font-medium text-espresso">Photo</p>
-        <div className="flex items-start gap-4">
-          <div className="relative aspect-[4/5] w-24 shrink-0 overflow-hidden rounded-xl bg-linen ring-1 ring-espresso/8">
-            {previewSrc ? (
-              <Image src={previewSrc} alt="" fill sizes="96px" unoptimized className="object-cover" />
-            ) : (
-              <span className="flex size-full items-center justify-center text-taupe/60">
-                <UserRound className="size-8" strokeWidth={1.25} aria-hidden />
-              </span>
-            )}
-          </div>
-          <div className="min-w-0 flex-1 space-y-2">
-            <label
-              htmlFor={fileInputId}
-              className={buttonClasses({
-                variant: "secondary",
-                size: "sm",
-                className: "cursor-pointer has-focus-visible:outline-2 has-focus-visible:outline-espresso",
-              })}
-            >
-              <ImagePlus className="size-3.5" aria-hidden />
-              {previewSrc || photoUrl ? "Replace photo" : "Upload photo"}
-              <input
-                id={fileInputId}
-                type="file"
-                accept={TEAM_PHOTO_ACCEPT}
-                disabled={pending}
-                className="sr-only"
-                onChange={(event) => {
-                  const file = event.target.files?.[0];
-                  event.target.value = "";
-                  if (file) choosePhoto(file);
-                }}
-              />
-            </label>
-            {(previewSrc || photoUrl) && (
-              <Button variant="ghost" size="sm" onClick={clearPhoto} disabled={pending}>
-                <X className="size-3.5" aria-hidden />
-                Remove
-              </Button>
-            )}
-            <p className="text-xs text-muted">A portrait works best. Resized automatically.</p>
-          </div>
-        </div>
-        {!photo && (
-          <Input
-            id="image_url"
-            aria-label="Or paste an image link"
-            aria-invalid={photoMessage ? true : undefined}
-            aria-describedby={photoMessage ? "image_url-error" : undefined}
-            value={photoUrl}
-            onChange={(event) => {
-              setPhotoUrl(event.target.value);
-              setPhotoError(null);
-            }}
-            placeholder="Or paste an image link from your store's storage"
-            className="mt-3"
-          />
-        )}
-        {photoMessage && (
-          <p id="image_url-error" className="mt-1.5 text-xs text-rust">
-            {photoMessage}
-          </p>
-        )}
-      </div>
+      <PhotoPicker
+        picker={photo}
+        hint="A portrait works best. Resized automatically."
+        serverError={errors?.image_url?.[0]}
+        disabled={pending}
+      />
 
       <Field label="Name" htmlFor="name" errors={errors?.name}>
         <Input

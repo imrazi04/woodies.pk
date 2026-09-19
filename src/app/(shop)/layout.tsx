@@ -21,7 +21,7 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
       >
         Skip to content
       </a>
-      <SiteHeader categories={navCategories.slice(0, 4)} />
+      <SiteHeader categories={navCategories.slice(0, 3)} />
       <main id="main" className="flex-1">
         {children}
       </main>

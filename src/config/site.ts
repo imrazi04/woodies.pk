@@ -78,5 +78,6 @@ export const siteConfig = {
     { title: "Messages", href: "/admin/messages" },
     { title: "Contacts", href: "/admin/contacts" },
     { title: "Team", href: "/admin/team" },
+    { title: "Heritage stories", href: "/admin/heritage" },
   ],
 } as const;
