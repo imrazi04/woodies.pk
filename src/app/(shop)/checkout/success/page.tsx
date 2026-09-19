@@ -166,7 +166,10 @@ export default async function CheckoutSuccessPage({ searchParams }: PageProps<"/
               <MessageCircle className="size-4" aria-hidden />
               Message us about this order
             </a>
-            <Link href="/products" className={shopButtonClasses({ variant: "outline", className: "w-full" })}>
+            <Link href="/track-order" className={shopButtonClasses({ variant: "outline", className: "w-full" })}>
+              Track your order
+            </Link>
+            <Link href="/products" className={shopButtonClasses({ variant: "link", className: "self-center" })}>
               Continue shopping
               <ArrowRight className="size-4" aria-hidden />
             </Link>

@@ -51,6 +51,7 @@ export function SiteHeader({ categories }: { categories: { name: string; slug: s
       isCategory: true,
     })),
     { href: "/sale", label: "Sale" },
+    { href: "/track-order", label: "Track order" },
   ];
 
   return (
