@@ -45,10 +45,16 @@ await mustBeEmpty("order items are not readable", () => anon.from("order_items")
 await mustBeEmpty("hidden reviews are not readable", () =>
   anon.from("reviews").select("id, comment").eq("is_visible", false),
 );
-await mustError("review submitter_hash column is not readable", () => anon.from("reviews").select("id, submitter_hash"));
+await mustError("review submitter_hash column is not readable", () =>
+  anon.from("reviews").select("id, submitter_hash"),
+);
 await mustError("review order_id column is not readable", () => anon.from("reviews").select("id, order_id"));
 await mustError("select * on reviews is refused", () => anon.from("reviews").select("*"));
 await mustError("rate_limits table is not readable", () => anon.from("rate_limits").select("bucket, identity"));
+await mustError("contact messages are not readable", () => anon.from("contact_messages").select("id, email, message"));
+await mustBeEmpty("hidden contacts are not readable", () =>
+  anon.from("contact_persons").select("id, name").eq("is_published", false),
+);
 
 // --- Writes that must be blocked ------------------------------------------------
 await mustError("cannot insert a product", () =>
@@ -70,6 +76,22 @@ await mustError("cannot insert an order directly", () =>
   anon
     .from("orders")
     .insert({ customer_name: "bot", phone: "+923000000000", address: "x", total_amount: 0 })
+    .select("id"),
+);
+await mustError("cannot insert a contact message directly", () =>
+  anon
+    .from("contact_messages")
+    .insert({ name: "bot", email: "bot@example.com", message: "spam spam spam" })
+    .select("id"),
+);
+await mustError("cannot add a contact person", () =>
+  anon.from("contact_persons").insert({ name: "bot", department: "x", phone: "+923000000000" }).select("id"),
+);
+await mustBeEmpty("cannot change a contact person", () =>
+  anon
+    .from("contact_persons")
+    .update({ phone: "+923000000000" })
+    .neq("id", "00000000-0000-0000-0000-000000000000")
     .select("id"),
 );
 await mustBeEmpty("cannot change order status", () =>

@@ -16,8 +16,9 @@ export function SiteFooter({ categories }: { categories: { name: string; slug: s
       links: categories.map((category) => ({ href: `/categories/${category.slug}`, label: category.name })),
     },
     {
-      title: "Your order",
+      title: "Customer care",
       links: [
+        { href: "/contact", label: "Contact us" },
         { href: "/track-order", label: "Track your order" },
         { href: "/cart", label: "Cart" },
         { href: "/wishlist", label: "Wishlist" },

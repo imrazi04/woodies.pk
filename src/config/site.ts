@@ -25,14 +25,23 @@ export const siteConfig = {
     display: "+92 307 8747033",
   },
   /**
-   * Business details for search engines (Organization / LocalBusiness schema).
-   * Fill in `address` with your real shop or workshop address to appear in local results —
-   * leave it null if you have no public address, and only Organization schema is published.
+   * Business details for the contact page and search engines (Organization / LocalBusiness schema).
+   * Add your workshop's street to `address.street` to show it on the contact page and appear in
+   * local results; until then only the city is shown and only Organization schema is published.
    */
   business: {
     legalName: "woodiespk",
+    /** General support inbox, shown on the contact and policy pages. */
     email: null as string | null,
-    address: null as { street: string; city: string; region: string; postalCode: string; country: string } | null,
+    address: {
+      street: null as string | null,
+      city: "Chiniot",
+      region: "Punjab",
+      postalCode: "35400",
+      country: "PK",
+    },
+    /** Shown on the contact page. */
+    hours: "Monday to Saturday, 10am – 7pm",
     /** e.g. ["https://www.facebook.com/…", "https://www.instagram.com/…"] */
     socialProfiles: [] as string[],
   },
@@ -66,5 +75,7 @@ export const siteConfig = {
     { title: "Products", href: "/admin/products" },
     { title: "Orders", href: "/admin/orders" },
     { title: "Reviews", href: "/admin/reviews" },
+    { title: "Messages", href: "/admin/messages" },
+    { title: "Contacts", href: "/admin/contacts" },
   ],
 } as const;

@@ -8,11 +8,12 @@ import { JsonLd } from "./json-ld";
  */
 export function SiteSchema() {
   const { business } = siteConfig;
+  const hasStreetAddress = business.address.street !== null;
   const organizationId = absoluteUrl("/#organization");
   const telephone = `+${siteConfig.whatsapp.number}`;
 
   const organization: Record<string, unknown> = {
-    "@type": business.address ? "LocalBusiness" : "Organization",
+    "@type": hasStreetAddress ? "LocalBusiness" : "Organization",
     "@id": organizationId,
     name: siteConfig.name,
     legalName: business.legalName,
@@ -32,7 +33,7 @@ export function SiteSchema() {
 
   if (business.email) organization.email = business.email;
   if (business.socialProfiles.length > 0) organization.sameAs = [...business.socialProfiles];
-  if (business.address) {
+  if (hasStreetAddress) {
     organization.address = {
       "@type": "PostalAddress",
       streetAddress: business.address.street,

@@ -36,3 +36,9 @@ export function formatDateTime(iso: string) {
 export function formatDay(isoDate: string) {
   return dayFormatter.format(new Date(isoDate));
 }
+
+/** "+923001234567" as "0300 1234567"; any other number is returned as stored. */
+export function formatPhone(phone: string) {
+  const mobile = phone.match(/^\+92(3\d{2})(\d{7})$/);
+  return mobile ? `0${mobile[1]} ${mobile[2]}` : phone;
+}

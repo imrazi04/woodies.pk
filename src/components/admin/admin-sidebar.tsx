@@ -1,7 +1,9 @@
 "use client";
 
 import {
+  BookUser,
   ExternalLink,
+  Inbox,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -28,11 +30,13 @@ const icons: Record<AdminHref, LucideIcon> = {
   "/admin/products": Package,
   "/admin/orders": ShoppingBag,
   "/admin/reviews": MessageSquare,
+  "/admin/messages": Inbox,
+  "/admin/contacts": BookUser,
 };
 
-type SidebarProps = { email?: string; pendingOrders: number };
+type SidebarProps = { email?: string; pendingOrders: number; unreadMessages: number };
 
-export function AdminSidebar({ email, pendingOrders }: SidebarProps) {
+export function AdminSidebar({ email, pendingOrders, unreadMessages }: SidebarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const drawerRef = useModalDialog(mobileOpen);
 
@@ -74,6 +78,7 @@ export function AdminSidebar({ email, pendingOrders }: SidebarProps) {
         <SidebarContent
           email={email}
           pendingOrders={pendingOrders}
+          unreadMessages={unreadMessages}
           onNavigate={() => drawerRef.current?.close()}
           onClose={() => drawerRef.current?.close()}
         />
@@ -81,7 +86,7 @@ export function AdminSidebar({ email, pendingOrders }: SidebarProps) {
 
       {/* Desktop: fixed dark sidebar */}
       <aside className="hidden bg-espresso text-cream md:sticky md:top-0 md:flex md:h-dvh md:w-64 md:shrink-0 md:flex-col print:hidden">
-        <SidebarContent email={email} pendingOrders={pendingOrders} />
+        <SidebarContent email={email} pendingOrders={pendingOrders} unreadMessages={unreadMessages} />
       </aside>
     </>
   );
@@ -90,6 +95,7 @@ export function AdminSidebar({ email, pendingOrders }: SidebarProps) {
 function SidebarContent({
   email,
   pendingOrders,
+  unreadMessages,
   onNavigate,
   onClose,
 }: SidebarProps & { onNavigate?: () => void; onClose?: () => void }) {
@@ -124,7 +130,12 @@ function SidebarContent({
           {siteConfig.adminNav.map((item) => {
             const Icon = icons[item.href];
             const active = item.href === "/admin" ? pathname === "/admin" : pathname.startsWith(item.href);
-            const showPending = item.href === "/admin/orders" && pendingOrders > 0;
+            const badge =
+              item.href === "/admin/orders"
+                ? { count: pendingOrders, label: "pending" }
+                : item.href === "/admin/messages"
+                  ? { count: unreadMessages, label: "unread" }
+                  : null;
             return (
               <li key={item.href}>
                 <Link
@@ -139,10 +150,10 @@ function SidebarContent({
                   {active && <span aria-hidden className="absolute inset-y-2 left-0 w-0.5 rounded-full bg-clay" />}
                   <Icon className="size-[18px] shrink-0" strokeWidth={1.75} aria-hidden />
                   <span className="flex-1">{item.title}</span>
-                  {showPending && (
+                  {badge && badge.count > 0 && (
                     <span className="rounded-full bg-clay px-2 py-0.5 text-[11px] font-semibold text-cream tabular-nums">
-                      {pendingOrders}
-                      <span className="sr-only"> pending</span>
+                      {badge.count}
+                      <span className="sr-only"> {badge.label}</span>
                     </span>
                   )}
                 </Link>

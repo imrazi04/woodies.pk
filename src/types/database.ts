@@ -255,6 +255,76 @@ export type Database = {
           },
         ];
       };
+      contact_persons: {
+        Row: {
+          id: string;
+          name: string;
+          department: string;
+          phone: string | null;
+          is_whatsapp: boolean;
+          email: string | null;
+          hours: string | null;
+          sort_order: number;
+          is_published: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          department: string;
+          phone?: string | null;
+          is_whatsapp?: boolean;
+          email?: string | null;
+          hours?: string | null;
+          sort_order?: number;
+          is_published?: boolean;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          department?: string;
+          phone?: string | null;
+          is_whatsapp?: boolean;
+          email?: string | null;
+          hours?: string | null;
+          sort_order?: number;
+          is_published?: boolean;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      /** Not readable by the public; inserted by the server only. */
+      contact_messages: {
+        Row: {
+          id: string;
+          name: string;
+          email: string;
+          phone: string | null;
+          message: string;
+          is_read: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          email: string;
+          phone?: string | null;
+          message: string;
+          is_read?: boolean;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          email?: string;
+          phone?: string | null;
+          message?: string;
+          is_read?: boolean;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       product_rating_summaries: {
@@ -312,3 +382,5 @@ export type ProductImage = Tables<"product_images">;
 export type Order = Tables<"orders">;
 export type OrderItem = Tables<"order_items">;
 export type Review = Tables<"reviews">;
+export type ContactPerson = Tables<"contact_persons">;
+export type ContactMessage = Tables<"contact_messages">;

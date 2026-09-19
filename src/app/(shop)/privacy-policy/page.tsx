@@ -34,8 +34,8 @@ const sections: LegalSection[] = [
             order; your number is never published.
           </li>
           <li>
-            <strong className="font-medium text-espresso">Messages</strong>: anything you send us on WhatsApp or by
-            email.
+            <strong className="font-medium text-espresso">Messages</strong>: anything you send us through our contact
+            form, on WhatsApp or by email.
           </li>
         </LegalList>
         <p>We never ask for card or bank details on this website. All orders are paid in cash on delivery.</p>

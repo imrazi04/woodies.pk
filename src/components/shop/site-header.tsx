@@ -52,6 +52,7 @@ export function SiteHeader({ categories }: { categories: { name: string; slug: s
     })),
     { href: "/sale", label: "Sale" },
     { href: "/track-order", label: "Track order" },
+    { href: "/contact", label: "Contact" },
   ];
 
   return (
